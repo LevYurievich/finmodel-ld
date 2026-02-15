@@ -1,0 +1,1369 @@
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Финансовый калькулятор (12 мес) — WB / Ozon / Lamoda / Offline</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#121a33; --muted:#8ea0c7; --text:#e9eeff;
+      --good:#35d07f; --bad:#ff5a6b; --warn:#ffcc66; --line:#22305a;
+      --shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#0b1020 0%, #070b16 100%);color:var(--text)}
+    header{padding:16px 18px 10px;border-bottom:1px solid var(--line)}
+    header h1{margin:0 0 6px;font-size:18px}
+    header p{margin:0;color:var(--muted);font-size:13px;line-height:1.35}
+    .wrap{max-width:1220px;margin:0 auto;padding:14px 18px 28px}
+    .grid{display:grid;grid-template-columns: 460px 1fr;gap:14px;align-items:start}
+    @media (max-width:1050px){.grid{grid-template-columns:1fr}}
+    .panel{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:14px;padding:12px;box-shadow:var(--shadow)}
+    .panel h2{margin:0 0 10px;font-size:14px;color:#cfe0ff}
+    .sub{margin:10px 0 8px;padding:8px 10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px dashed rgba(255,255,255,0.09);color:#cfe0ff;font-weight:800;font-size:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .sub small{color:var(--muted);font-weight:600}
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:520px){.form{grid-template-columns:1fr}}
+    .field{display:flex;flex-direction:column;gap:6px}
+    label{font-size:12px;color:var(--muted)}
+    input, select{
+      width:100%;padding:9px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);
+      background:rgba(0,0,0,0.20);color:var(--text);outline:none
+    }
+    input:focus, select:focus{border-color:rgba(106,167,255,0.6); box-shadow:0 0 0 3px rgba(106,167,255,0.15)}
+    input.invalid, select.invalid{border-color: rgba(255,90,107,0.7); box-shadow:0 0 0 3px rgba(255,90,107,0.12)}
+    input:disabled, select:disabled{opacity:.55; cursor:not-allowed}
+    .row2{display:grid;grid-template-columns: 1fr 1fr;gap:10px}
+    @media (max-width:520px){.row2{grid-template-columns:1fr}}
+    .btnRow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    button{
+      padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.14);
+      background:rgba(255,255,255,0.06);color:var(--text);cursor:pointer;font-weight:800;font-size:12px
+    }
+    button:hover{border-color:rgba(106,167,255,0.55)}
+    button.primary{background:rgba(106,167,255,0.12);border-color:rgba(106,167,255,0.28)}
+    button.danger{background:rgba(255,90,107,0.12);border-color:rgba(255,90,107,0.25)}
+    button:disabled{opacity:.55; cursor:not-allowed}
+    .badge{display:inline-block;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.10);color:var(--muted);font-size:11px;white-space:nowrap}
+    .warn{margin-top:10px;padding:10px;border-radius:12px;background:rgba(255,204,102,0.10);border:1px solid rgba(255,204,102,0.22);color:#ffe8c6;font-size:12px;line-height:1.4;display:none}
+    .warn.show{display:block}
+    .dangerBox{margin-top:10px;padding:10px;border-radius:12px;background:rgba(255,90,107,0.10);border:1px solid rgba(255,90,107,0.22);color:#ffd7dd;font-size:12px;line-height:1.4;display:none}
+    .dangerBox.show{display:block}
+    .okBox{margin-top:10px;padding:10px;border-radius:12px;background:rgba(53,208,127,0.10);border:1px solid rgba(53,208,127,0.22);color:#d9ffe9;font-size:12px;line-height:1.4;display:none}
+    .okBox.show{display:block}
+    .results{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media (max-width:1050px){.results{grid-template-columns:1fr}}
+    .section{background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+    .section.span2{grid-column:1/-1}
+    .section .head{padding:10px 12px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .section .head strong{font-size:13px}
+    .section .head span{font-size:12px;color:var(--muted)}
+    table{width:100%; border-collapse:collapse;}
+    td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px;vertical-align:top}
+    td:nth-child(1){color:#cfe0ff}
+    td:nth-child(2), td:nth-child(3), td:nth-child(4){
+      text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+    tr:last-child td{border-bottom:none}
+    .pos{color:var(--good)} .neg{color:var(--bad)}
+    .footnote{margin-top:10px;color:var(--muted);font-size:11px;line-height:1.4}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+    .miniCard{padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.15)}
+    .spark{width:100%;height:86px;display:block}
+    .toggle{
+      display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);background:rgba(0,0,0,0.15);
+      margin-top:8px
+    }
+    .toggle input{width:42px;height:22px;appearance:none;background:rgba(255,255,255,0.12);border-radius:999px;position:relative;cursor:pointer;border:1px solid rgba(255,255,255,0.14)}
+    .toggle input:checked{background:rgba(106,167,255,0.22);border-color:rgba(106,167,255,0.35)}
+    .toggle input::after{content:"";position:absolute;top:50%;left:3px;width:16px;height:16px;border-radius:50%;background:rgba(233,238,255,0.90);transform:translateY(-50%);transition:.15s}
+    .toggle input:checked::after{left: calc(100% - 19px);background:rgba(106,167,255,0.95)}
+    .toggle b{font-size:12px;color:#cfe0ff}
+    .toggle span{font-size:11px;color:var(--muted)}
+    .miniTableWrap{padding:10px 12px}
+    .miniTable{width:100%;border-collapse:collapse}
+    .miniTable th,.miniTable td{padding:7px 8px;border-bottom:1px solid rgba(255,255,255,0.06);font-size:12px}
+    .miniTable th{color:var(--muted);text-align:left;font-weight:800}
+    .miniTable td.num{text-align:right;font-variant-numeric:tabular-nums}
+    .miniTable tr:last-child td{border-bottom:none}
+    .scrollY{max-height:220px; overflow:auto; border:1px solid rgba(255,255,255,0.08); border-radius:10px}
+
+    /* Шапка таблицы (центруем названия столбцов) */
+    .tblHead td{
+      color:var(--muted);
+      font-weight:800;
+      text-align:center;
+      padding-top:10px;
+      padding-bottom:10px;
+    }
+    .tblHead td:first-child{ text-align:left; }
+  </style>
+</head>
+
+<body>
+<header>
+  <h1>Финансовый калькулятор (12 мес) — WB / Ozon / Lamoda / Offline</h1>
+  <p>Считает годовой P&amp;L и риск кассового разрыва (Cash_end по месяцам)</p>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+
+    <!-- INPUTS -->
+    <section class="panel" id="panelInputs">
+      <h2>A) Сценарии</h2>
+      <div class="form">
+        <div class="field" style="grid-column:1/-1">
+          <label>Сценарий</label>
+          <select id="scSelect"></select>
+        </div>
+      </div>
+      <div class="btnRow" style="margin-top:8px">
+        <button class="primary" id="scNew">Создать</button>
+        <button class="primary" id="scSave">Сохранить</button>
+        <button class="danger" id="scDel">Удалить</button>
+        <button id="scReset">Сброс к Base</button>
+        <button id="xlExport">Выгрузить Excel</button>
+      </div>
+      <div class="footnote" id="scMeta"></div>
+      <div class="warn" id="derivedWarn"></div>
+
+      <div class="sub" style="margin-top:14px;">B) Общие и АУП <small>год → 12 мес (по сезонности)</small></div>
+
+      <div class="toggle">
+        <input type="checkbox" id="ucByDir">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <b>Себестоимость: общая / по направлениям</b>
+          <span>Вкл. — появятся 4 поля unit cost.</span>
+        </div>
+      </div>
+
+      <div class="form" style="margin-top:10px">
+        <div class="field" id="ucCommonWrap"><label>Себестоимость 1 шт, ₽/шт</label><input id="ucCommon" type="number" min="0" step="1"></div>
+        <div class="field" id="ucWBWrap" style="display:none"><label>Себестоимость WB, ₽/шт</label><input id="ucWB" type="number" min="0" step="1"></div>
+        <div class="field" id="ucOZWrap" style="display:none"><label>Себестоимость Ozon, ₽/шт</label><input id="ucOZ" type="number" min="0" step="1"></div>
+        <div class="field" id="ucLAWrap" style="display:none"><label>Себестоимость Lamoda, ₽/шт</label><input id="ucLA" type="number" min="0" step="1"></div>
+        <div class="field" id="ucOFWrap" style="display:none"><label>Себестоимость Offline, ₽/шт</label><input id="ucOF" type="number" min="0" step="1"></div>
+
+        <div class="field"><label>Налоги, % от годовой выручки</label><input id="taxPct" type="number" min="0" max="100" step="0.01"></div>
+        <div class="field"><label>Проценты по кредитам, ₽/мес (в CFO)</label><input id="interestM" type="number" min="0" step="1"></div>
+        <div class="field"><label>Дивиденды, ₽/год</label><input id="divY" type="number" min="0" step="1"></div>
+        <div class="field"><label>Погашение тела долга, ₽/год</label><input id="debtY" type="number" min="0" step="1"></div>
+
+        <div class="field"><label>Аренда+содержание, ₽/мес</label><input id="rentM" type="number" min="0" step="1"></div>
+        <div class="field"><label>ФОТ, ₽/мес</label><input id="payrollM" type="number" min="0" step="1"></div>
+        <div class="field"><label>Сайт и сервисы, ₽/мес</label><input id="siteM" type="number" min="0" step="1"></div>
+        <div class="field"><label>Контент, ₽/мес</label><input id="contentM" type="number" min="0" step="1"></div>
+        <div class="field"><label>Транспорт по РФ, ₽/мес</label><input id="transportM" type="number" min="0" step="1"></div>
+        <div class="field"><label>Фулфилмент, % от выручки</label><input id="fulfillPct" type="number" min="0" max="100" step="0.01"></div>
+        <div class="field"><label>Прочие АУП, % от выручки</label><input id="otherPct" type="number" min="0" max="100" step="0.01"></div>
+      </div>
+
+      <div class="sub" style="margin-top:14px;">C) Оборачиваемость капитала, стартовые остатки<small></small></div>
+      <div class="form">
+        <div class="field"><label>DIO (Оборачиваемость запасов), дней</label><input id="dio" type="number" min="0" step="1"></div>
+        <div class="field"><label>DSO (Оборачиваемость дебиторской задолженности), дней</label><input id="dso" type="number" min="0" step="1"></div>
+        <div class="field"><label>DPO (Оборачиваемость кредиторской задолженности), дней</label><input id="dpo" type="number" min="0" step="1"></div>
+        <div class="field"><label>Деньги на начало, ₽</label><input id="cashStart" type="number" step="1"></div>
+        <div class="field"><label>ДЗ на начало, ₽</label><input id="arStart" type="number" step="1"></div>
+        <div class="field"><label>КЗ на начало, ₽</label><input id="apStart" type="number" step="1"></div>
+        <div class="field" style="grid-column:1/-1">
+          <label>Запасы на начало, ₽ (опц.; если пусто → авто = (COGS_год/365)*DIO)</label>
+          <input id="invStart" type="number" step="1" placeholder="оставьте пустым для авто">
+        </div>
+      </div>
+
+      <div id="cycleWarn" class="warn"></div>
+      <div id="seasonWarn" class="warn"></div>
+
+      <div class="sub" style="margin-top:14px;">D) Направления + сезонность <small>Q1..Q4 (%)</small></div>
+
+      <!-- WB -->
+      <div class="miniCard">
+        <div class="sub" style="margin:0 0 8px;">WB <small>годовые</small></div>
+        <div class="form">
+          <div class="field"><label>Qty, шт/год</label><input id="wb_qty" type="number" min="0" step="1"></div>
+          <div class="field"><label>AvgCheck, ₽</label><input id="wb_avg" type="number" min="0" step="1"></div>
+          <div class="field"><label>Комиссия, %</label><input id="wb_comm" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Логистика, %</label><input id="wb_log" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Реклама, %</label><input id="wb_adv" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Прочие, %</label><input id="wb_other" type="number" min="0" max="100" step="0.01"></div>
+        </div>
+        <div class="row2" style="margin-top:10px;">
+          <div class="miniCard" style="padding:10px;">
+            <div class="sub" style="margin:0 0 8px;">Сезонность WB <small>Q1..Q4</small></div>
+            <div class="form">
+              <div class="field"><label>Q1</label><input id="wb_q1" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q2</label><input id="wb_q2" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q3</label><input id="wb_q3" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q4</label><input id="wb_q4" type="number" min="0" step="0.01"></div>
+            </div>
+          </div>
+          <div class="footnote" style="align-self:center;">Сумма Q1..Q4 должна быть 100 (иначе нормализуем пропорционально).</div>
+        </div>
+      </div>
+
+      <!-- Ozon -->
+      <div class="miniCard" style="margin-top:10px">
+        <div class="sub" style="margin:0 0 8px;">Ozon <small>годовые</small></div>
+        <div class="form">
+          <div class="field"><label>Qty, шт/год</label><input id="oz_qty" type="number" min="0" step="1"></div>
+          <div class="field"><label>AvgCheck, ₽</label><input id="oz_avg" type="number" min="0" step="1"></div>
+          <div class="field"><label>Комиссия, %</label><input id="oz_comm" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Логистика, %</label><input id="oz_log" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Реклама, %</label><input id="oz_adv" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Прочие, %</label><input id="oz_other" type="number" min="0" max="100" step="0.01"></div>
+        </div>
+        <div class="row2" style="margin-top:10px;">
+          <div class="miniCard" style="padding:10px;">
+            <div class="sub" style="margin:0 0 8px;">Сезонность Ozon <small>Q1..Q4</small></div>
+            <div class="form">
+              <div class="field"><label>Q1</label><input id="oz_q1" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q2</label><input id="oz_q2" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q3</label><input id="oz_q3" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q4</label><input id="oz_q4" type="number" min="0" step="0.01"></div>
+            </div>
+          </div>
+          <div class="footnote" style="align-self:center;">По умолчанию равномерно.</div>
+        </div>
+      </div>
+
+      <!-- Lamoda -->
+      <div class="miniCard" style="margin-top:10px">
+        <div class="sub" style="margin:0 0 8px;">Lamoda <small>годовые</small></div>
+        <div class="form">
+          <div class="field"><label>Qty, шт/год</label><input id="la_qty" type="number" min="0" step="1"></div>
+          <div class="field"><label>AvgCheck, ₽</label><input id="la_avg" type="number" min="0" step="1"></div>
+          <div class="field"><label>Комиссия+логистика, %</label><input id="la_commLog" type="number" min="0" max="100" step="0.01"></div>
+        </div>
+        <div class="row2" style="margin-top:10px;">
+          <div class="miniCard" style="padding:10px;">
+            <div class="sub" style="margin:0 0 8px;">Сезонность Lamoda <small>Q1..Q4</small></div>
+            <div class="form">
+              <div class="field"><label>Q1</label><input id="la_q1" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q2</label><input id="la_q2" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q3</label><input id="la_q3" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q4</label><input id="la_q4" type="number" min="0" step="0.01"></div>
+            </div>
+          </div>
+          <div class="footnote" style="align-self:center;">По умолчанию равномерно.</div>
+        </div>
+      </div>
+
+      <!-- Offline -->
+      <div class="miniCard" style="margin-top:10px">
+        <div class="sub" style="margin:0 0 8px;">Offline <small>годовые</small></div>
+        <div class="form">
+          <div class="field"><label>Qty, шт/год</label><input id="of_qty" type="number" min="0" step="1"></div>
+          <div class="field"><label>AvgCheck, ₽</label><input id="of_avg" type="number" min="0" step="1"></div>
+          <div class="field"><label>Логистика, %</label><input id="of_log" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Реклама, %</label><input id="of_adv" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>Эквайринг, %</label><input id="of_acq" type="number" min="0" max="100" step="0.01"></div>
+          <div class="field"><label>—</label><input disabled value=""></div>
+        </div>
+        <div class="row2" style="margin-top:10px;">
+          <div class="miniCard" style="padding:10px;">
+            <div class="sub" style="margin:0 0 8px;">Сезонность Offline <small>Q1..Q4</small></div>
+            <div class="form">
+              <div class="field"><label>Q1</label><input id="of_q1" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q2</label><input id="of_q2" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q3</label><input id="of_q3" type="number" min="0" step="0.01"></div>
+              <div class="field"><label>Q4</label><input id="of_q4" type="number" min="0" step="0.01"></div>
+            </div>
+          </div>
+          <div class="footnote" style="align-self:center;"></div>
+        </div>
+      </div>
+
+      <div class="footnote" style="margin-top:12px">
+        <b>Как пользоваться</b><br/>
+        1) Base — редактируемый сценарий, сохраняйте его кнопкой “Сохранить”.<br/>
+        2) Optimistic / Pessimistic считаются автоматически от актуального Base (поля будут заблокированы).<br/>
+        3) Сезонность Q1..Q4 можно не трогать (равномерно). 4) “Выгрузить Excel” даст .xls, который открывается в Excel.
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="results">
+
+      <div class="section span2">
+        <div class="head"><strong>Выручка и валовая прибыль (год)</strong><span class="badge">по направлениям</span></div>
+        <table><tbody>
+          <tr class="tblHead">
+            <td></td>
+            <td>Выручка</td>
+            <td>Вал. прибыль</td>
+            <td>Рентабельность, %</td>
+          </tr>
+
+          <tr><td>WB</td><td id="rev_wb">—</td><td id="gp_wb">—</td><td id="gpm_wb">—</td></tr>
+          <tr><td>Ozon</td><td id="rev_oz">—</td><td id="gp_oz">—</td><td id="gpm_oz">—</td></tr>
+          <tr><td>Lamoda</td><td id="rev_la">—</td><td id="gp_la">—</td><td id="gpm_la">—</td></tr>
+          <tr><td>Offline</td><td id="rev_of">—</td><td id="gp_of">—</td><td id="gpm_of">—</td></tr>
+
+          <tr><td><strong>Итого</strong></td><td id="rev_t"><strong>—</strong></td><td id="gp_t"><strong>—</strong></td><td id="gpm_t"><strong>—</strong></td></tr>
+        </tbody></table>
+      </div>
+
+      <div class="section">
+        <div class="head"><strong>ОПиУ (год)</strong></div>
+        <table><tbody>
+          <tr><td>Постоянные расходы (АУП)</td><td id="fixedY">—</td></tr>
+          <tr><td>Операционная прибыль</td><td id="ebit">—</td></tr>
+          <tr><td>% ОП</td><td id="ebitm">—</td></tr>
+          <tr><td>Проценты (interestM*12)</td><td id="intY">—</td></tr>
+          <tr><td>Налоги</td><td id="taxY">—</td></tr>
+          <tr><td><strong>Чистая прибыль</strong></td><td id="np"><strong>—</strong></td></tr>
+          <tr><td>% ЧП</td><td id="npm">—</td></tr>
+        </tbody></table>
+        <div class="footnote" style="padding:10px 12px">
+          Проценты по кредитам учтены в ОПиУ как расход (и в ДДС — в CFO).
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="head"><strong>Cash (12 мес)</strong><span class="badge">риск кассового разрыва</span></div>
+        <div style="padding:10px 12px">
+          <svg id="spark" class="spark" viewBox="0 0 420 86" preserveAspectRatio="none"></svg>
+          <div class="footnote">
+            <span class="mono">Cash_end</span> по месяцам.
+            <div style="margin-top:6px" class="mono" id="cashMinMax">—</div>
+          </div>
+          <div id="gapOk" class="okBox"></div>
+          <div id="gapBad" class="dangerBox"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="head"><strong>ДДС (итоги + поквартально/помесячно)</strong></div>
+        <table><tbody>
+          <tr><td>Чистый операционный поток</td><td id="cfoY">—</td></tr>
+          <tr><td>Чистый финансовый поток</td><td id="cffY">—</td></tr>
+          <tr><td><strong>Деньги на конец года</strong></td><td id="cashEnd"><strong>—</strong></td></tr>
+          <tr><td>Контроль: Cash = Cash_start + ΣCFO + ΣCFF</td><td id="cashCheck">—</td></tr>
+        </tbody></table>
+
+        <div class="miniTableWrap">
+          <div class="footnote" style="margin:0 0 8px">
+            Мини-раскладка по месяцам: <span class="mono">ЧОП / ЧФП / Cash_end</span>
+          </div>
+          <div class="scrollY">
+            <table class="miniTable" id="miniCF">
+              <thead>
+                <tr>
+                  <th>Месяц</th>
+                  <th class="num">ЧОП</th>
+                  <th class="num">ЧФП</th>
+                  <th class="num">Cash_end</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div class="footnote" style="margin-top:10px">
+            В этой версии: <b>проценты включены в ЧОП</b> (операционный поток). В ЧФП остаются только дивиденды и погашение тела долга (равномерно).
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </div>
+</div>
+
+<script>
+(() => {
+  // ===== helpers =====
+  const fmtRub = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 });
+  const fmtPct = new Intl.NumberFormat("ru-RU", { style:"percent", maximumFractionDigits: 1 });
+
+  const $ = (id) => document.getElementById(id);
+  const n = (id) => Number($(id).value || 0);
+  const pct = (x) => (Number(x || 0) / 100);
+
+  function setText(id, value, type="rub"){
+    const el = $(id);
+    if(!el) return;
+    if(type==="rub"){
+      const v = isFinite(value) ? value : 0;
+      el.textContent = fmtRub.format(Math.round(v));
+      el.classList.toggle("pos", v > 0);
+      el.classList.toggle("neg", v < 0);
+    } else if(type==="pct"){
+      const v = isFinite(value) ? value : 0;
+      el.textContent = fmtPct.format(v);
+      el.classList.remove("pos","neg");
+    } else if(type==="txt"){
+      el.textContent = String(value ?? "");
+      el.classList.remove("pos","neg");
+    }
+  }
+
+  function normalizeSeason(q1,q2,q3,q4){
+    const arr = [q1,q2,q3,q4].map(v => Number(v||0));
+    const sum = arr.reduce((a,b)=>a+b,0);
+    if(sum <= 0){
+      return { q:[0.25,0.25,0.25,0.25], sum, normalized:true };
+    }
+    const q = arr.map(v => v/sum);
+    const normalized = Math.abs(sum - 100) > 0.0001;
+    return { q, sum, normalized };
+  }
+
+  function validatePctInputs(){
+    const pctIds = [
+      "taxPct","fulfillPct","otherPct",
+      "wb_comm","wb_log","wb_adv","wb_other",
+      "oz_comm","oz_log","oz_adv","oz_other",
+      "la_commLog",
+      "of_log","of_adv","of_acq"
+    ];
+    pctIds.forEach(id => {
+      const el = $(id);
+      if(!el) return;
+      el.classList.remove("invalid");
+      const v = Number(el.value || 0);
+      if(!isFinite(v) || v < 0 || v > 100) el.classList.add("invalid");
+    });
+    document.querySelectorAll('input[type="number"]').forEach(el => {
+      const v = Number(el.value);
+      if(isFinite(v) && v < 0) el.classList.add("invalid");
+    });
+  }
+
+  // ===== scenario storage =====
+  const LS_KEY = "wb_oz_la_of_scenarios_v3"; // bumped version
+  const LS_ACTIVE = "wb_oz_la_of_active_v3";
+
+  function baseScenario(){
+    return {
+      meta:{ name:"Base", builtIn:false, updatedAt:Date.now() }, // Base — редактируемый
+      ui:{ ucByDir:false },
+      common:{
+        ucCommon:350,
+        ucByDir:{ wb:350, oz:350, la:350, of:350 },
+        taxPct:6, interestM:20000, divY:0, debtY:0,
+        aup:{ rentM:80000, payrollM:260000, siteM:12000, contentM:30000, transportM:25000, fulfillPct:2.5, otherPct:1.5 },
+        wc:{ dio:45, dso:14, dpo:20, cashStart:300000, arStart:250000, apStart:180000, invStart:null }
+      },
+      dirs:{
+        wb:{ qty:12000, avg:1500, comm:12, log:7, adv:6, other:2, season:{q1:25,q2:25,q3:25,q4:25} },
+        oz:{ qty:7000,  avg:1600, comm:11, log:8, adv:5, other:2, season:{q1:25,q2:25,q3:25,q4:25} },
+        la:{ qty:2500,  avg:2200, commLog:22, season:{q1:25,q2:25,q3:25,q4:25} },
+        of:{ qty:1800,  avg:2600, log:2, adv:2, acq:2.2, season:{q1:25,q2:25,q3:25,q4:25} }
+      }
+    };
+  }
+
+  function optimisticFromBase(b){
+    const s = JSON.parse(JSON.stringify(b));
+    s.meta = { name:"Optimistic", builtIn:true, updatedAt:Date.now() };
+    s.dirs.wb.qty = Math.round(s.dirs.wb.qty * 1.15);
+    s.dirs.oz.qty = Math.round(s.dirs.oz.qty * 1.18);
+    s.dirs.la.qty = Math.round(s.dirs.la.qty * 1.12);
+    s.dirs.of.qty = Math.round(s.dirs.of.qty * 1.10);
+    s.dirs.wb.adv = Math.max(0, s.dirs.wb.adv - 0.8);
+    s.dirs.oz.adv = Math.max(0, s.dirs.oz.adv - 0.6);
+    return s;
+  }
+
+  function pessimisticFromBase(b){
+    const s = JSON.parse(JSON.stringify(b));
+    s.meta = { name:"Pessimistic", builtIn:true, updatedAt:Date.now() };
+    s.dirs.wb.qty = Math.round(s.dirs.wb.qty * 0.85);
+    s.dirs.oz.qty = Math.round(s.dirs.oz.qty * 0.82);
+    s.dirs.la.qty = Math.round(s.dirs.la.qty * 0.88);
+    s.dirs.of.qty = Math.round(s.dirs.of.qty * 0.90);
+    s.dirs.wb.adv = s.dirs.wb.adv + 1.5;
+    s.dirs.oz.adv = s.dirs.oz.adv + 1.2;
+    s.common.wc.dso = s.common.wc.dso + 7;
+    s.common.wc.dio = s.common.wc.dio + 10;
+    return s;
+  }
+
+  function loadScenarios(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(!raw) return null;
+      const obj = JSON.parse(raw);
+      return (obj && typeof obj === "object") ? obj : null;
+    }catch(e){ return null; }
+  }
+
+  // сохраняем только Base + пользовательские (без Optimistic/Pessimistic)
+  function persistableScenarios(map){
+    const out = {};
+    Object.keys(map || {}).forEach(k=>{
+      const sc = map[k];
+      if(!sc) return;
+      if(k === "Optimistic" || k === "Pessimistic") return;
+      out[k] = sc;
+    });
+    return out;
+  }
+  function saveScenarios(obj){
+    localStorage.setItem(LS_KEY, JSON.stringify(persistableScenarios(obj)));
+  }
+
+  // ВАЖНО: Optimistic / Pessimistic всегда пересчитываются от актуального Base
+  function ensureBuiltIns(map){
+    const out = map || {};
+    if(!out["Base"]) out["Base"] = baseScenario();
+
+    const base = out["Base"];
+    out["Optimistic"] = optimisticFromBase(base);
+    out["Pessimistic"] = pessimisticFromBase(base);
+    return out;
+  }
+
+  let scenarios = ensureBuiltIns(loadScenarios() || {});
+  saveScenarios(scenarios);
+
+  let active = localStorage.getItem(LS_ACTIVE) || "Base";
+  if(!scenarios[active]) active = "Base";
+
+  const isDerivedName = (name) => (name === "Optimistic" || name === "Pessimistic");
+
+  function listScenarioNames(){
+    return Object.keys(scenarios).sort((a,b)=>{
+      const ab = isDerivedName(a) ? 0 : 1;
+      const bb = isDerivedName(b) ? 0 : 1;
+      if(ab!==bb) return ab-bb;
+      return a.localeCompare(b,"ru");
+    });
+  }
+
+  function refreshScenarioSelect(){
+    const sel = $("scSelect");
+    sel.innerHTML = "";
+    listScenarioNames().forEach(name=>{
+      const o = document.createElement("option");
+      o.value = name;
+      o.textContent = isDerivedName(name) ? `${name} (auto)` : name;
+      sel.appendChild(o);
+    });
+    sel.value = active;
+
+    const m = scenarios[active]?.meta;
+    $("scMeta").textContent = m ? `Активный: ${m.name}. Изменён: ${new Date(m.updatedAt).toLocaleString("ru-RU")}.` : "";
+  }
+
+  function applyUcToggle(){
+    const by = $("ucByDir").checked;
+    $("ucCommonWrap").style.display = by ? "none" : "block";
+    $("ucWBWrap").style.display = by ? "block" : "none";
+    $("ucOZWrap").style.display = by ? "block" : "none";
+    $("ucLAWrap").style.display = by ? "block" : "none";
+    $("ucOFWrap").style.display = by ? "block" : "none";
+  }
+
+  // ===== derived UI lock =====
+  function setFormDisabled(isDerived){
+    const warn = $("derivedWarn");
+    if(isDerived){
+      warn.textContent = "ℹ Optimistic / Pessimistic — производные сценарии. Чтобы изменить значения, отредактируйте Base и сохраните его.";
+      warn.classList.add("show");
+    } else {
+      warn.textContent = "";
+      warn.classList.remove("show");
+    }
+
+    // отключаем только поля ввода (не трогаем выбор сценария и кнопки)
+    document.querySelectorAll("#panelInputs input, #panelInputs select").forEach(el=>{
+      if(el.id === "scSelect") return;
+      // сезонность/поля и т.д.
+      el.disabled = isDerived;
+    });
+
+    // кнопку Save выключаем на производных
+    $("scSave").disabled = isDerived;
+
+    // удалять производные нельзя
+    $("scDel").disabled = isDerived;
+
+    // toggle для unit cost тоже input — уже отключится
+  }
+
+  // ===== load/save scenario to UI =====
+  function loadToUI(s){
+    $("ucByDir").checked = !!s.ui.ucByDir;
+    applyUcToggle();
+
+    $("ucCommon").value = s.common.ucCommon ?? 0;
+    $("ucWB").value = s.common.ucByDir.wb ?? 0;
+    $("ucOZ").value = s.common.ucByDir.oz ?? 0;
+    $("ucLA").value = s.common.ucByDir.la ?? 0;
+    $("ucOF").value = s.common.ucByDir.of ?? 0;
+
+    $("taxPct").value = s.common.taxPct ?? 0;
+    $("interestM").value = s.common.interestM ?? 0;
+    $("divY").value = s.common.divY ?? 0;
+    $("debtY").value = s.common.debtY ?? 0;
+
+    $("rentM").value = s.common.aup.rentM ?? 0;
+    $("payrollM").value = s.common.aup.payrollM ?? 0;
+    $("siteM").value = s.common.aup.siteM ?? 0;
+    $("contentM").value = s.common.aup.contentM ?? 0;
+    $("transportM").value = s.common.aup.transportM ?? 0;
+    $("fulfillPct").value = s.common.aup.fulfillPct ?? 0;
+    $("otherPct").value = s.common.aup.otherPct ?? 0;
+
+    $("dio").value = s.common.wc.dio ?? 0;
+    $("dso").value = s.common.wc.dso ?? 0;
+    $("dpo").value = s.common.wc.dpo ?? 0;
+    $("cashStart").value = s.common.wc.cashStart ?? 0;
+    $("arStart").value = s.common.wc.arStart ?? 0;
+    $("apStart").value = s.common.wc.apStart ?? 0;
+    $("invStart").value = (s.common.wc.invStart === null || s.common.wc.invStart === undefined) ? "" : s.common.wc.invStart;
+
+    // dirs
+    $("wb_qty").value = s.dirs.wb.qty ?? 0;
+    $("wb_avg").value = s.dirs.wb.avg ?? 0;
+    $("wb_comm").value = s.dirs.wb.comm ?? 0;
+    $("wb_log").value = s.dirs.wb.log ?? 0;
+    $("wb_adv").value = s.dirs.wb.adv ?? 0;
+    $("wb_other").value = s.dirs.wb.other ?? 0;
+    $("wb_q1").value = s.dirs.wb.season.q1 ?? 25;
+    $("wb_q2").value = s.dirs.wb.season.q2 ?? 25;
+    $("wb_q3").value = s.dirs.wb.season.q3 ?? 25;
+    $("wb_q4").value = s.dirs.wb.season.q4 ?? 25;
+
+    $("oz_qty").value = s.dirs.oz.qty ?? 0;
+    $("oz_avg").value = s.dirs.oz.avg ?? 0;
+    $("oz_comm").value = s.dirs.oz.comm ?? 0;
+    $("oz_log").value = s.dirs.oz.log ?? 0;
+    $("oz_adv").value = s.dirs.oz.adv ?? 0;
+    $("oz_other").value = s.dirs.oz.other ?? 0;
+    $("oz_q1").value = s.dirs.oz.season.q1 ?? 25;
+    $("oz_q2").value = s.dirs.oz.season.q2 ?? 25;
+    $("oz_q3").value = s.dirs.oz.season.q3 ?? 25;
+    $("oz_q4").value = s.dirs.oz.season.q4 ?? 25;
+
+    $("la_qty").value = s.dirs.la.qty ?? 0;
+    $("la_avg").value = s.dirs.la.avg ?? 0;
+    $("la_commLog").value = s.dirs.la.commLog ?? 0;
+    $("la_q1").value = s.dirs.la.season.q1 ?? 25;
+    $("la_q2").value = s.dirs.la.season.q2 ?? 25;
+    $("la_q3").value = s.dirs.la.season.q3 ?? 25;
+    $("la_q4").value = s.dirs.la.season.q4 ?? 25;
+
+    $("of_qty").value = s.dirs.of.qty ?? 0;
+    $("of_avg").value = s.dirs.of.avg ?? 0;
+    $("of_log").value = s.dirs.of.log ?? 0;
+    $("of_adv").value = s.dirs.of.adv ?? 0;
+    $("of_acq").value = s.dirs.of.acq ?? 0;
+    $("of_q1").value = s.dirs.of.season.q1 ?? 25;
+    $("of_q2").value = s.dirs.of.season.q2 ?? 25;
+    $("of_q3").value = s.dirs.of.season.q3 ?? 25;
+    $("of_q4").value = s.dirs.of.season.q4 ?? 25;
+  }
+
+  function readFromUIIntoScenario(s){
+    s.ui.ucByDir = !!$("ucByDir").checked;
+
+    s.common.ucCommon = n("ucCommon");
+    s.common.ucByDir = {
+      wb: n("ucWB"),
+      oz: n("ucOZ"),
+      la: n("ucLA"),
+      of: n("ucOF")
+    };
+
+    s.common.taxPct = n("taxPct");
+    s.common.interestM = n("interestM");
+    s.common.divY = n("divY");
+    s.common.debtY = n("debtY");
+
+    s.common.aup = {
+      rentM: n("rentM"),
+      payrollM: n("payrollM"),
+      siteM: n("siteM"),
+      contentM: n("contentM"),
+      transportM: n("transportM"),
+      fulfillPct: n("fulfillPct"),
+      otherPct: n("otherPct")
+    };
+
+    const invRaw = $("invStart").value;
+    s.common.wc = {
+      dio: n("dio"),
+      dso: n("dso"),
+      dpo: n("dpo"),
+      cashStart: n("cashStart"),
+      arStart: n("arStart"),
+      apStart: n("apStart"),
+      invStart: invRaw === "" ? null : Number(invRaw || 0)
+    };
+
+    s.dirs.wb = {
+      qty: n("wb_qty"),
+      avg: n("wb_avg"),
+      comm: n("wb_comm"),
+      log: n("wb_log"),
+      adv: n("wb_adv"),
+      other: n("wb_other"),
+      season: { q1:n("wb_q1"), q2:n("wb_q2"), q3:n("wb_q3"), q4:n("wb_q4") }
+    };
+    s.dirs.oz = {
+      qty: n("oz_qty"),
+      avg: n("oz_avg"),
+      comm: n("oz_comm"),
+      log: n("oz_log"),
+      adv: n("oz_adv"),
+      other: n("oz_other"),
+      season: { q1:n("oz_q1"), q2:n("oz_q2"), q3:n("oz_q3"), q4:n("oz_q4") }
+    };
+    s.dirs.la = {
+      qty: n("la_qty"),
+      avg: n("la_avg"),
+      commLog: n("la_commLog"),
+      season: { q1:n("la_q1"), q2:n("la_q2"), q3:n("la_q3"), q4:n("la_q4") }
+    };
+    s.dirs.of = {
+      qty: n("of_qty"),
+      avg: n("of_avg"),
+      log: n("of_log"),
+      adv: n("of_adv"),
+      acq: n("of_acq"),
+      season: { q1:n("of_q1"), q2:n("of_q2"), q3:n("of_q3"), q4:n("of_q4") }
+    };
+
+    s.meta.updatedAt = Date.now();
+  }
+
+  // ===== model =====
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function quarterIdx(m){ return Math.floor(m/3); }
+  function monthShareFromSeason(qArr, m){ return (qArr[quarterIdx(m)] / 3); }
+
+  function unitCost(s, key){
+    if(s.ui.ucByDir) return Number(s.common.ucByDir[key] || 0);
+    return Number(s.common.ucCommon || 0);
+  }
+
+  function calcAnnualDirs(s){
+    const wb = s.dirs.wb, oz = s.dirs.oz, la = s.dirs.la, of = s.dirs.of;
+    const res = { wb:{}, oz:{}, la:{}, of:{}, totals:{ Revenue:0, COGS:0, Var:0, GP:0 } };
+
+    function calcWB(){
+      const Revenue = (wb.qty||0)*(wb.avg||0);
+      const COGS = (wb.qty||0)*unitCost(s,"wb");
+      const varRate = (pct(wb.comm)+pct(wb.log)+pct(wb.adv)+pct(wb.other));
+      const Var = Revenue * varRate;
+      const GP = Revenue - COGS - Var;
+      return { Revenue, COGS, Var, GP, GM: Revenue>0?GP/Revenue:0 };
+    }
+    function calcOZ(){
+      const Revenue = (oz.qty||0)*(oz.avg||0);
+      const COGS = (oz.qty||0)*unitCost(s,"oz");
+      const varRate = (pct(oz.comm)+pct(oz.log)+pct(oz.adv)+pct(oz.other));
+      const Var = Revenue * varRate;
+      const GP = Revenue - COGS - Var;
+      return { Revenue, COGS, Var, GP, GM: Revenue>0?GP/Revenue:0 };
+    }
+    function calcLA(){
+      const Revenue = (la.qty||0)*(la.avg||0);
+      const COGS = (la.qty||0)*unitCost(s,"la");
+      const varRate = pct(la.commLog);
+      const Var = Revenue * varRate;
+      const GP = Revenue - COGS - Var;
+      return { Revenue, COGS, Var, GP, GM: Revenue>0?GP/Revenue:0 };
+    }
+    function calcOF(){
+      const Revenue = (of.qty||0)*(of.avg||0);
+      const COGS = (of.qty||0)*unitCost(s,"of");
+      const varRate = (pct(of.log)+pct(of.adv)+pct(of.acq));
+      const Var = Revenue * varRate;
+      const GP = Revenue - COGS - Var;
+      return { Revenue, COGS, Var, GP, GM: Revenue>0?GP/Revenue:0 };
+    }
+
+    res.wb = calcWB();
+    res.oz = calcOZ();
+    res.la = calcLA();
+    res.of = calcOF();
+
+    ["wb","oz","la","of"].forEach(k=>{
+      res.totals.Revenue += res[k].Revenue;
+      res.totals.COGS += res[k].COGS;
+      res.totals.Var += res[k].Var;
+      res.totals.GP += res[k].GP;
+    });
+    res.totals.GM = res.totals.Revenue>0 ? res.totals.GP / res.totals.Revenue : 0;
+    return res;
+  }
+
+  function calcPL(s, annual){
+    const R = annual.totals.Revenue;
+    const a = s.common.aup;
+    const fixedRubY = (a.rentM + a.payrollM + a.siteM + a.contentM + a.transportM) * 12;
+    const fulfillY = R * pct(a.fulfillPct);
+    const otherY = R * pct(a.otherPct);
+    const FixedY = fixedRubY + fulfillY + otherY;
+
+    const EBIT = annual.totals.GP - FixedY; // операционная прибыль
+    const EBITm = R>0 ? EBIT / R : 0;
+
+    const intY = (s.common.interestM || 0) * 12;
+    const taxY = R * pct(s.common.taxPct);
+
+    const NP = EBIT - intY - taxY;
+    const NPm = R>0 ? NP / R : 0;
+
+    return { FixedY, EBIT, EBITm, intY, taxY, NP, NPm };
+  }
+
+  function calcCash12(s, annual){
+    const seaWB = normalizeSeason(s.dirs.wb.season.q1, s.dirs.wb.season.q2, s.dirs.wb.season.q3, s.dirs.wb.season.q4);
+    const seaOZ = normalizeSeason(s.dirs.oz.season.q1, s.dirs.oz.season.q2, s.dirs.oz.season.q3, s.dirs.oz.season.q4);
+    const seaLA = normalizeSeason(s.dirs.la.season.q1, s.dirs.la.season.q2, s.dirs.la.season.q3, s.dirs.la.season.q4);
+    const seaOF = normalizeSeason(s.dirs.of.season.q1, s.dirs.of.season.q2, s.dirs.of.season.q3, s.dirs.of.season.q4);
+
+    const revM = Array(12).fill(0);
+    for(let m=0;m<12;m++){
+      revM[m] =
+        annual.wb.Revenue * monthShareFromSeason(seaWB.q, m) +
+        annual.oz.Revenue * monthShareFromSeason(seaOZ.q, m) +
+        annual.la.Revenue * monthShareFromSeason(seaLA.q, m) +
+        annual.of.Revenue * monthShareFromSeason(seaOF.q, m);
+    }
+
+    const cogsM = Array(12).fill(0);
+    const varM = Array(12).fill(0);
+    for(let m=0;m<12;m++){
+      cogsM[m] =
+        annual.wb.COGS * monthShareFromSeason(seaWB.q, m) +
+        annual.oz.COGS * monthShareFromSeason(seaOZ.q, m) +
+        annual.la.COGS * monthShareFromSeason(seaLA.q, m) +
+        annual.of.COGS * monthShareFromSeason(seaOF.q, m);
+
+      varM[m] =
+        annual.wb.Var * monthShareFromSeason(seaWB.q, m) +
+        annual.oz.Var * monthShareFromSeason(seaOZ.q, m) +
+        annual.la.Var * monthShareFromSeason(seaLA.q, m) +
+        annual.of.Var * monthShareFromSeason(seaOF.q, m);
+    }
+
+    const dio = s.common.wc.dio || 0;
+    const dso = s.common.wc.dso || 0;
+    const dpo = s.common.wc.dpo || 0;
+
+    const cashStart = s.common.wc.cashStart || 0;
+    const arStart = s.common.wc.arStart || 0;
+    const apStart = s.common.wc.apStart || 0;
+
+    const invStartInput = s.common.wc.invStart;
+    const invStartAuto = (annual.totals.COGS/365) * dio;
+    const invStart = (invStartInput === null || invStartInput === undefined) ? invStartAuto : Number(invStartInput || 0);
+
+    const a = s.common.aup;
+    const fixedRubM = (a.rentM + a.payrollM + a.siteM + a.contentM + a.transportM);
+    const fulfillPct = pct(a.fulfillPct);
+    const otherPct = pct(a.otherPct);
+    const taxPctV = pct(s.common.taxPct);
+
+    const interestM = s.common.interestM || 0; // проценты в CFO
+    const debtM = (s.common.debtY || 0) / 12;
+    const divM  = (s.common.divY  || 0) / 12;
+
+    const arEnd = Array(12).fill(0), invEnd = Array(12).fill(0), apEnd = Array(12).fill(0);
+    const cashEnd = Array(12).fill(0);
+    const cfo = Array(12).fill(0);
+    const cff = Array(12).fill(0);
+    const netcf = Array(12).fill(0);
+
+    for(let i=0;i<12;i++){
+      const arBegin = (i===0 ? arStart : arEnd[i-1]);
+      const invBegin = (i===0 ? invStart : invEnd[i-1]);
+      const apBegin = (i===0 ? apStart : apEnd[i-1]);
+
+      arEnd[i] = revM[i] * (dso/30);
+      const dAR = arEnd[i] - arBegin;
+      const cashIn = revM[i] - dAR;
+
+      invEnd[i] = cogsM[i] * (dio/30);
+      const dInv = invEnd[i] - invBegin;
+      const purchases = cogsM[i] + dInv;
+
+      apEnd[i] = purchases * (dpo/30);
+      const dAP = apEnd[i] - apBegin;
+      const cashOutSup = purchases - dAP;
+
+      const taxes = revM[i] * taxPctV;
+
+      const opexCash = varM[i] + fixedRubM + (revM[i] * fulfillPct) + (revM[i] * otherPct) + taxes + interestM;
+      cfo[i] = cashIn - cashOutSup - opexCash;
+
+      cff[i] = -(debtM + divM);
+
+      netcf[i] = cfo[i] + cff[i];
+
+      const prevCash = (i===0 ? cashStart : cashEnd[i-1]);
+      cashEnd[i] = prevCash + netcf[i];
+    }
+
+    const cfoY = cfo.reduce((a,b)=>a+b,0);
+    const cffY = cff.reduce((a,b)=>a+b,0);
+    const cashEndY = cashEnd[11];
+    const riskMonths = cashEnd.map((v,i)=> v < 0 ? MONTHS[i] : null).filter(Boolean);
+
+    return {
+      seaWarnings:[
+        {name:"WB", ...seaWB},
+        {name:"Ozon", ...seaOZ},
+        {name:"Lamoda", ...seaLA},
+        {name:"Offline", ...seaOF}
+      ],
+      invStartAuto,
+      revM, cogsM, varM,
+      arEnd, invEnd, apEnd,
+      cfo, cff, netcf, cashEnd,
+      cfoY, cffY, cashEndY, riskMonths
+    };
+  }
+
+  function renderSpark(values){
+    const svg = $("spark");
+    const W = 420, H = 86, pad = 6;
+    if(!values || !values.length){ svg.innerHTML = ""; return; }
+
+    const min = Math.min(...values), max = Math.max(...values);
+    const span = (max - min) || 1;
+    const x = (i) => pad + i * (W - 2*pad) / (values.length - 1);
+    const y = (v) => pad + (H - 2*pad) * (1 - (v - min)/span);
+
+    const zeroY = (0 >= min && 0 <= max) ? y(0) : null;
+
+    let d = "";
+    values.forEach((v,i)=> d += (i===0?"M":"L") + x(i).toFixed(2) + " " + y(v).toFixed(2) + " ");
+    const baseY = (zeroY !== null) ? zeroY : y(min);
+    const area = `${d} L ${x(values.length-1).toFixed(2)} ${baseY.toFixed(2)} L ${x(0).toFixed(2)} ${baseY.toFixed(2)} Z`;
+
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(106,167,255,0.18)"/>
+          <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+      </defs>
+      ${zeroY!==null ? `<line x1="${pad}" y1="${zeroY}" x2="${W-pad}" y2="${zeroY}" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>` : ""}
+      <path d="${area}" fill="url(#g)"></path>
+      <path d="${d}" fill="none" stroke="rgba(106,167,255,0.95)" stroke-width="2" stroke-linecap="round"></path>
+      ${values.map((v,i)=>{
+        const fill = v < 0 ? "rgba(255,90,107,0.95)" : "rgba(53,208,127,0.95)";
+        return `<circle cx="${x(i).toFixed(2)}" cy="${y(v).toFixed(2)}" r="2.6" fill="${fill}"></circle>`;
+      }).join("")}
+    `;
+  }
+
+  function renderMiniCF(cash){
+    const tb = $("miniCF").querySelector("tbody");
+    tb.innerHTML = "";
+    for(let i=0;i<12;i++){
+      const tr = document.createElement("tr");
+      const cfo = cash.cfo[i];
+      const cff = cash.cff[i];
+      const ce  = cash.cashEnd[i];
+      tr.innerHTML = `
+        <td>${MONTHS[i]}</td>
+        <td class="num ${cfo<0?'neg':'pos'}">${fmtRub.format(Math.round(cfo))}</td>
+        <td class="num ${cff<0?'neg':'pos'}">${fmtRub.format(Math.round(cff))}</td>
+        <td class="num ${ce<0?'neg':'pos'}"><b>${fmtRub.format(Math.round(ce))}</b></td>
+      `;
+      tb.appendChild(tr);
+    }
+  }
+
+  // ===== Excel Export (SpreadsheetML 2003, .xls) =====
+  function xmlEscape(s){
+    return String(s)
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;")
+      .replace(/'/g,"&apos;");
+  }
+  function ssCell(v, type){
+    if (v === null || v === undefined) v = "";
+    if (type === "Number"){
+      const num = Number(v);
+      const safe = isFinite(num) ? String(num) : "0";
+      return `<Cell><Data ss:Type="Number">${safe}</Data></Cell>`;
+    }
+    return `<Cell><Data ss:Type="String">${xmlEscape(v)}</Data></Cell>`;
+  }
+  function ssRow(cells){ return `<Row>${cells.join("")}</Row>`; }
+  function ssSheet(name, rows){
+    return `
+      <Worksheet ss:Name="${xmlEscape(name)}">
+        <Table>
+          ${rows.join("\n")}
+        </Table>
+      </Worksheet>`;
+  }
+
+  function exportExcel(currentState){
+    const { s, annual, pl, cash } = currentState;
+
+    const now = new Date();
+    const fileName = `Финансовый_калькулятор_${s.meta.name}_${now.toISOString().slice(0,10)}.xls`;
+
+    const inputsRows = [];
+    inputsRows.push(ssRow([ssCell("Раздел","String"), ssCell("Параметр","String"), ssCell("Значение","String")]));
+    const add = (section, k, v) => inputsRows.push(ssRow([ssCell(section,"String"), ssCell(k,"String"), ssCell(v,"String")]));
+
+    add("Сценарий", "Название", s.meta.name);
+    add("Себестоимость", "Режим", s.ui.ucByDir ? "По направлениям" : "Общая");
+    add("Себестоимость", "Общая, ₽/шт", s.common.ucCommon);
+    add("Себестоимость", "WB, ₽/шт", s.common.ucByDir.wb);
+    add("Себестоимость", "Ozon, ₽/шт", s.common.ucByDir.oz);
+    add("Себестоимость", "Lamoda, ₽/шт", s.common.ucByDir.la);
+    add("Себестоимость", "Offline, ₽/шт", s.common.ucByDir.of);
+
+    add("Налоги/Финансы", "Налоги, % от выручки", s.common.taxPct);
+    add("Налоги/Финансы", "Проценты по кредитам, ₽/мес (в CFO)", s.common.interestM);
+    add("Налоги/Финансы", "Дивиденды, ₽/год", s.common.divY);
+    add("Налоги/Финансы", "Погашение тела долга, ₽/год", s.common.debtY);
+
+    add("АУП", "Аренда+содержание, ₽/мес", s.common.aup.rentM);
+    add("АУП", "ФОТ, ₽/мес", s.common.aup.payrollM);
+    add("АУП", "Сайт и сервисы, ₽/мес", s.common.aup.siteM);
+    add("АУП", "Контент, ₽/мес", s.common.aup.contentM);
+    add("АУП", "Транспорт по РФ, ₽/мес", s.common.aup.transportM);
+    add("АУП", "Фулфилмент, % от выручки", s.common.aup.fulfillPct);
+    add("АУП", "Прочие АУП, % от выручки", s.common.aup.otherPct);
+
+    add("Оборотный капитал", "DIO, дней", s.common.wc.dio);
+    add("Оборотный капитал", "DSO, дней", s.common.wc.dso);
+    add("Оборотный капитал", "DPO, дней", s.common.wc.dpo);
+    add("Стартовые остатки", "Деньги на начало, ₽", s.common.wc.cashStart);
+    add("Стартовые остатки", "ДЗ на начало, ₽", s.common.wc.arStart);
+    add("Стартовые остатки", "КЗ на начало, ₽", s.common.wc.apStart);
+    add("Стартовые остатки", "Запасы на начало (ввод), ₽", s.common.wc.invStart === null ? "" : s.common.wc.invStart);
+    add("Стартовые остатки", "Запасы на начало (авто), ₽", cash.invStartAuto);
+
+    inputsRows.push(ssRow([ssCell("","String"), ssCell("","String"), ssCell("","String")]));
+    inputsRows.push(ssRow([ssCell("Направление","String"), ssCell("Qty, шт/год","String"), ssCell("AvgCheck, ₽","String"), ssCell("Ставки, %","String"), ssCell("Сезонность Q1..Q4, %","String")]));
+
+    const addDir = (name, d, varText, sea) => inputsRows.push(ssRow([
+      ssCell(name,"String"),
+      ssCell(d.qty,"Number"),
+      ssCell(d.avg,"Number"),
+      ssCell(varText,"String"),
+      ssCell(`${sea.q1}, ${sea.q2}, ${sea.q3}, ${sea.q4}`,"String")
+    ]));
+
+    addDir("WB", s.dirs.wb, `Комиссия ${s.dirs.wb.comm}; Логистика ${s.dirs.wb.log}; Реклама ${s.dirs.wb.adv}; Прочие ${s.dirs.wb.other}`, s.dirs.wb.season);
+    addDir("Ozon", s.dirs.oz, `Комиссия ${s.dirs.oz.comm}; Логистика ${s.dirs.oz.log}; Реклама ${s.dirs.oz.adv}; Прочие ${s.dirs.oz.other}`, s.dirs.oz.season);
+    addDir("Lamoda", s.dirs.la, `Комиссия+логистика ${s.dirs.la.commLog}`, s.dirs.la.season);
+    addDir("Offline", s.dirs.of, `Логистика ${s.dirs.of.log}; Реклама ${s.dirs.of.adv}; Эквайринг ${s.dirs.of.acq}`, s.dirs.of.season);
+
+    const plRows = [];
+    plRows.push(ssRow([ssCell("Показатель","String"), ssCell("Значение","String")]));
+    plRows.push(ssRow([ssCell("Выручка (итого), ₽","String"), ssCell(annual.totals.Revenue,"Number")]));
+    plRows.push(ssRow([ssCell("COGS (итого), ₽","String"), ssCell(annual.totals.COGS,"Number")]));
+    plRows.push(ssRow([ssCell("Переменные расходы (итого), ₽","String"), ssCell(annual.totals.Var,"Number")]));
+    plRows.push(ssRow([ssCell("Валовая прибыль (итого), ₽","String"), ssCell(annual.totals.GP,"Number")]));
+    plRows.push(ssRow([ssCell("Валовая маржа, %","String"), ssCell((annual.totals.GM*100).toFixed(4),"Number")]));
+    plRows.push(ssRow([ssCell("Постоянные расходы (АУП), ₽","String"), ssCell(pl.FixedY,"Number")]));
+    plRows.push(ssRow([ssCell("Операционная прибыль, ₽","String"), ssCell(pl.EBIT,"Number")]));
+    plRows.push(ssRow([ssCell("% ОП","String"), ssCell((pl.EBITm*100).toFixed(4),"Number")]));
+    plRows.push(ssRow([ssCell("Проценты, ₽/год","String"), ssCell(pl.intY,"Number")]));
+    plRows.push(ssRow([ssCell("Налоги, ₽/год","String"), ssCell(pl.taxY,"Number")]));
+    plRows.push(ssRow([ssCell("Чистая прибыль, ₽","String"), ssCell(pl.NP,"Number")]));
+    plRows.push(ssRow([ssCell("% ЧП","String"), ssCell((pl.NPm*100).toFixed(4),"Number")]));
+
+    plRows.push(ssRow([ssCell("","String"), ssCell("","String")]));
+    plRows.push(ssRow([ssCell("По направлениям","String"), ssCell("Выручка, ₽","String"), ssCell("COGS, ₽","String"), ssCell("Переменные, ₽","String"), ssCell("Валовая прибыль, ₽","String"), ssCell("Валовая маржа, %","String")]));
+    const addPLDir = (name, d) => plRows.push(ssRow([
+      ssCell(name,"String"),
+      ssCell(d.Revenue,"Number"),
+      ssCell(d.COGS,"Number"),
+      ssCell(d.Var,"Number"),
+      ssCell(d.GP,"Number"),
+      ssCell((d.GM*100).toFixed(4),"Number")
+    ]));
+    addPLDir("WB", annual.wb);
+    addPLDir("Ozon", annual.oz);
+    addPLDir("Lamoda", annual.la);
+    addPLDir("Offline", annual.of);
+
+    const cashRows = [];
+    cashRows.push(ssRow([
+      ssCell("Месяц","String"),
+      ssCell("Выручка, ₽","String"),
+      ssCell("COGS, ₽","String"),
+      ssCell("Переменные, ₽","String"),
+      ssCell("ДЗ на конец, ₽","String"),
+      ssCell("Запасы на конец, ₽","String"),
+      ssCell("КЗ на конец, ₽","String"),
+      ssCell("CFO, ₽","String"),
+      ssCell("CFF, ₽","String"),
+      ssCell("NetCF, ₽","String"),
+      ssCell("Деньги на конец, ₽","String")
+    ]));
+    for(let i=0;i<12;i++){
+      cashRows.push(ssRow([
+        ssCell(MONTHS[i],"String"),
+        ssCell(cash.revM[i],"Number"),
+        ssCell(cash.cogsM[i],"Number"),
+        ssCell(cash.varM[i],"Number"),
+        ssCell(cash.arEnd[i],"Number"),
+        ssCell(cash.invEnd[i],"Number"),
+        ssCell(cash.apEnd[i],"Number"),
+        ssCell(cash.cfo[i],"Number"),
+        ssCell(cash.cff[i],"Number"),
+        ssCell(cash.netcf[i],"Number"),
+        ssCell(cash.cashEnd[i],"Number")
+      ]));
+    }
+    cashRows.push(ssRow([ssCell("","String"), ssCell("","String")]));
+    cashRows.push(ssRow([ssCell("CFO (сумма), ₽","String"), ssCell(cash.cfoY,"Number")]));
+    cashRows.push(ssRow([ssCell("CFF (сумма), ₽","String"), ssCell(cash.cffY,"Number")]));
+    cashRows.push(ssRow([ssCell("Деньги на конец года, ₽","String"), ssCell(cash.cashEndY,"Number")]));
+
+    const xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ ${ssSheet("Вводные", inputsRows)}
+ ${ssSheet("ОПиУ", plRows)}
+ ${ssSheet("ДДС_12м", cashRows)}
+</Workbook>`;
+
+    const blob = new Blob([xml], { type:"application/vnd.ms-excel;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // ===== state for Excel export =====
+  let lastState = null;
+
+  function recalc(){
+    // всегда пересобираем производные от Base перед расчётом
+    scenarios = ensureBuiltIns(scenarios);
+
+    const isDerived = isDerivedName(active);
+    const s = scenarios[active];
+
+    // в производных не читаем UI в сценарий (они авто)
+    if(!isDerived){
+      readFromUIIntoScenario(s);
+      scenarios[active] = s;
+
+      // сохраняем только Base + custom
+      saveScenarios(scenarios);
+    }
+
+    validatePctInputs();
+
+    const dio = s.common.wc.dio || 0, dso = s.common.wc.dso || 0, dpo = s.common.wc.dpo || 0;
+    const finDays = dio + dso - dpo;
+    const cw = $("cycleWarn");
+    if(finDays <= 0){
+      cw.textContent = `⚠ FinancialCycle_days = DIO + DSO − DPO = ${finDays} (<=0). Проверьте DIO/DSO/DPO.`;
+      cw.classList.add("show");
+    } else {
+      cw.classList.remove("show");
+      cw.textContent = "";
+    }
+
+    const annual = calcAnnualDirs(s);
+    const pl = calcPL(s, annual);
+    const cash = calcCash12(s, annual);
+
+    const sw = cash.seaWarnings.filter(x => x.normalized);
+    const warnEl = $("seasonWarn");
+    if(sw.length){
+      warnEl.textContent = "⚠ Нормализую сезонность: " + sw.map(x => `${x.name} (сумма=${x.sum.toFixed(2)})`).join(", ") + ".";
+      warnEl.classList.add("show");
+    } else {
+      warnEl.classList.remove("show"); warnEl.textContent = "";
+    }
+
+    // render revenue/gp/gm per direction
+    setText("rev_wb", annual.wb.Revenue);
+    setText("rev_oz", annual.oz.Revenue);
+    setText("rev_la", annual.la.Revenue);
+    setText("rev_of", annual.of.Revenue);
+
+    setText("gp_wb", annual.wb.GP);
+    setText("gp_oz", annual.oz.GP);
+    setText("gp_la", annual.la.GP);
+    setText("gp_of", annual.of.GP);
+
+    setText("gpm_wb", annual.wb.GM, "pct");
+    setText("gpm_oz", annual.oz.GM, "pct");
+    setText("gpm_la", annual.la.GM, "pct");
+    setText("gpm_of", annual.of.GM, "pct");
+
+    setText("rev_t", annual.totals.Revenue);
+    setText("gp_t", annual.totals.GP);
+    setText("gpm_t", annual.totals.GM, "pct");
+
+    // render pl
+    setText("fixedY", -pl.FixedY);
+    setText("ebit", pl.EBIT);
+    setText("ebitm", pl.EBITm, "pct");
+    setText("intY", -pl.intY);
+    setText("taxY", -pl.taxY);
+    setText("np", pl.NP);
+    setText("npm", pl.NPm, "pct");
+
+    // cash
+    const minC = Math.min(...cash.cashEnd), maxC = Math.max(...cash.cashEnd);
+    $("cashMinMax").textContent = `min ${fmtRub.format(Math.round(minC))} • max ${fmtRub.format(Math.round(maxC))}`;
+    renderSpark(cash.cashEnd);
+
+    const gapOk = $("gapOk");
+    const gapBad = $("gapBad");
+    if(cash.riskMonths.length){
+      gapOk.classList.remove("show");
+      gapBad.classList.add("show");
+      gapBad.innerHTML = `<b>Риск кассового разрыва: Да</b><br/>Cash_end &lt; 0 в месяцах: <b>${cash.riskMonths.join(", ")}</b>.`;
+    } else {
+      gapBad.classList.remove("show");
+      gapOk.classList.add("show");
+      gapOk.innerHTML = `<b>Риск кассового разрыва: Нет</b><br/>Во всех месяцах Cash_end ≥ 0.`;
+    }
+
+    setText("cfoY", cash.cfoY);
+    setText("cffY", cash.cffY);
+    setText("cashEnd", cash.cashEndY);
+    const check = (s.common.wc.cashStart || 0) + cash.cfoY + cash.cffY;
+    setText("cashCheck", check);
+
+    renderMiniCF(cash);
+
+    // meta в UI
+    const m = scenarios[active]?.meta;
+    $("scMeta").textContent = m ? `Активный: ${m.name}. Изменён: ${new Date(m.updatedAt).toLocaleString("ru-RU")}.` : "";
+
+    // active сохраняем
+    localStorage.setItem(LS_ACTIVE, active);
+
+    // состояние для Excel
+    lastState = { s: JSON.parse(JSON.stringify(s)), annual, pl, cash };
+  }
+
+  // ===== scenario actions =====
+  function setActive(name){
+    if(!scenarios[name]) return;
+    active = name;
+    localStorage.setItem(LS_ACTIVE, active);
+
+    // гарантируем актуальные производные перед показом
+    scenarios = ensureBuiltIns(scenarios);
+
+    refreshScenarioSelect();
+    loadToUI(scenarios[active]);
+    applyUcToggle();
+
+    const derived = isDerivedName(active);
+    setFormDisabled(derived);
+
+    recalc();
+  }
+
+  function wire(){
+    document.querySelectorAll("input,select").forEach(el=>{
+      el.addEventListener("input", () => recalc());
+      el.addEventListener("change", () => recalc());
+    });
+
+    $("ucByDir").addEventListener("change", () => { applyUcToggle(); recalc(); });
+
+    $("scSelect").addEventListener("change", (e)=> setActive(e.target.value));
+
+    $("scNew").addEventListener("click", ()=>{
+      const name = prompt("Имя нового сценария:");
+      if(!name) return;
+      if(scenarios[name]) return alert("Сценарий с таким именем уже существует.");
+      const base = JSON.parse(JSON.stringify(scenarios["Base"]));
+      base.meta = { name, builtIn:false, updatedAt:Date.now() };
+      scenarios[name] = base;
+
+      scenarios = ensureBuiltIns(scenarios);
+      saveScenarios(scenarios);
+      refreshScenarioSelect();
+      setActive(name);
+    });
+
+    $("scSave").addEventListener("click", ()=>{
+      if(isDerivedName(active)){
+        alert("Optimistic и Pessimistic формируются автоматически от Base. Сохраните Base.");
+        return;
+      }
+      const s = scenarios[active];
+      readFromUIIntoScenario(s);
+      scenarios[active] = s;
+
+      scenarios = ensureBuiltIns(scenarios);
+      saveScenarios(scenarios);
+
+      refreshScenarioSelect();
+      recalc();
+    });
+
+    $("scDel").addEventListener("click", ()=>{
+      if(isDerivedName(active)) return;
+
+      if(active === "Base") return alert("Base удалить нельзя. Создайте новый сценарий и удаляйте пользовательские.");
+
+      if(!confirm(`Удалить сценарий "${active}"?`)) return;
+      delete scenarios[active];
+
+      scenarios = ensureBuiltIns(scenarios);
+      saveScenarios(scenarios);
+      setActive("Base");
+    });
+
+    $("scReset").addEventListener("click", ()=>{
+      if(!confirm("Сбросить активный сценарий к Base? (перезапишет значения)")) return;
+
+      if(isDerivedName(active)){
+        // производный просто переоткроем (он и так от Base)
+        setActive(active);
+        return;
+      }
+
+      const cur = scenarios[active];
+      const base = JSON.parse(JSON.stringify(scenarios["Base"]));
+      base.meta = { name: cur.meta.name, builtIn:false, updatedAt:Date.now() };
+      scenarios[cur.meta.name] = base;
+
+      scenarios = ensureBuiltIns(scenarios);
+      saveScenarios(scenarios);
+      setActive(cur.meta.name);
+    });
+
+    $("xlExport").addEventListener("click", ()=>{
+      recalc();
+      if(!lastState) return alert("Нет данных для выгрузки.");
+      exportExcel(lastState);
+    });
+  }
+
+  // ===== init =====
+  scenarios = ensureBuiltIns(scenarios);
+  saveScenarios(scenarios);
+
+  refreshScenarioSelect();
+  loadToUI(scenarios[active]);
+  applyUcToggle();
+  setFormDisabled(isDerivedName(active));
+  wire();
+  recalc();
+})();
+</script>
+</body>
+</html>
